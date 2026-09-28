@@ -1,10 +1,15 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
+
+/** Gold-framed card with the reference's thin champagne border. */
+export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <div className={`rounded-[26px] border border-gold-soft/60 bg-panel ${className}`}>{children}</div>
+}
 
 export function Section({ title, children, right }: { title: string; children: ReactNode; right?: ReactNode }) {
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2.5 border-t border-line px-4 py-4 first:border-t-0">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold tracking-wide text-gray-400 uppercase">{title}</h3>
+        <h3 className="label">{title}</h3>
         {right}
       </div>
       {children}
@@ -27,6 +32,7 @@ export function Slider({
   onChange: (v: number) => void
   label: string
 }) {
+  const p = ((value - min) / (max - min)) * 100
   return (
     <input
       type="range"
@@ -35,15 +41,19 @@ export function Slider({
       min={min}
       max={max}
       step={step}
+      style={{ '--p': `${p}%` } as CSSProperties}
       onChange={(e) => onChange(Number(e.target.value))}
     />
   )
 }
 
+type Variant = 'outline' | 'pink' | 'ghost'
+
 export function Btn({
   children,
   onClick,
   active,
+  variant = 'outline',
   className = '',
   label,
   disabled,
@@ -51,10 +61,17 @@ export function Btn({
   children: ReactNode
   onClick: () => void
   active?: boolean
+  variant?: Variant
   className?: string
   label?: string
   disabled?: boolean
 }) {
+  const look =
+    variant === 'pink' || active
+      ? 'bg-pink text-ink border-pink'
+      : variant === 'ghost'
+        ? 'border-transparent text-muted'
+        : 'border-line bg-panel-2 text-cream hover:border-gold-soft'
   return (
     <button
       type="button"
@@ -63,9 +80,7 @@ export function Btn({
       aria-pressed={active}
       disabled={disabled}
       onClick={onClick}
-      className={`flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-xl px-3 text-sm font-medium transition active:scale-95 disabled:opacity-40 ${
-        active ? 'bg-accent text-white' : 'bg-gray-800 text-gray-100 hover:bg-gray-700'
-      } ${className}`}
+      className={`flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-2xl border px-3 text-sm font-medium transition active:scale-[0.97] disabled:opacity-40 ${look} ${className}`}
     >
       {children}
     </button>
@@ -91,12 +106,12 @@ export function NumberField({
 }) {
   const decimals = step < 0.1 ? 2 : step < 1 ? 1 : 0
   return (
-    <label className="flex h-10 items-center rounded-xl bg-gray-800 px-2 text-sm">
+    <label className="flex h-11 items-center rounded-2xl border border-line bg-panel-2 px-3 text-sm">
       <input
         type="number"
         inputMode="decimal"
         aria-label={label}
-        className="w-16 bg-transparent text-right tabular-nums outline-none"
+        className="w-14 bg-transparent text-right font-mono tabular-nums outline-none"
         // key forces re-sync when the value changes from gestures/sliders
         key={value.toFixed(decimals)}
         defaultValue={value.toFixed(decimals)}
@@ -108,7 +123,7 @@ export function NumberField({
           if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
         }}
       />
-      {suffix && <span className="ml-1 text-gray-400">{suffix}</span>}
+      {suffix && <span className="ml-1.5 font-mono text-xs text-muted">{suffix}</span>}
     </label>
   )
 
@@ -116,6 +131,11 @@ export function NumberField({
     const n = Number(raw.replace(',', '.'))
     if (Number.isFinite(n)) onChange(Math.min(max, Math.max(min, n)))
   }
+}
+
+/** Monospace value readout shown at the right of a section title. */
+export function Value({ children }: { children: ReactNode }) {
+  return <span className="font-mono text-xs text-cream tabular-nums">{children}</span>
 }
 
 // --- Icons (inline, stroke-based, 24px grid) ---
@@ -149,5 +169,6 @@ export const icons = {
   check: <Icon d="M5 12l5 5L20 7" />,
   x: <Icon d="M6 6l12 12 M18 6 6 18" />,
   download: <Icon d="M12 3v12 M7 10l5 5 5-5 M5 21h14" />,
+  plus: <Icon d="M12 5v14 M5 12h14" />,
   arrowRight: <Icon d="M5 12h14 M13 6l6 6-6 6" />,
 }

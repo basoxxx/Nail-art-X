@@ -2,7 +2,7 @@
 // Vite bundles referenced by index.html, so the app works offline right after
 // the first visit. Navigations are network-first (to pick up new deploys),
 // everything else cache-first.
-const CACHE = 'nail-art-x-v2'
+const CACHE = 'nail-art-x-v3'
 const SHELL = [
   './',
   './manifest.webmanifest',
@@ -21,6 +21,15 @@ self.addEventListener('install', (e) => {
       const html = await (await cache.match('./')).text()
       const assets = [...html.matchAll(/(?:src|href)="\.?\/?(assets\/[^"]+)"/g)].map((m) => './' + m[1])
       await cache.addAll(assets)
+      // Fonts and other files referenced from the CSS bundles (url(...)).
+      const nested = []
+      for (const css of assets.filter((a) => a.endsWith('.css'))) {
+        const text = await (await cache.match(css)).text()
+        for (const m of text.matchAll(/url\(["']?\.?\/?([^"')]+?)["']?\)/g)) {
+          if (!m[1].startsWith('data:')) nested.push(new URL(m[1], new URL(css, self.registration.scope)).href)
+        }
+      }
+      await cache.addAll([...new Set(nested)])
     })(),
   )
   self.skipWaiting()

@@ -12,6 +12,7 @@ export function NailGuide({
   strokeWidth = 2,
   dashed = true,
   anchor = 'top-1/2',
+  label,
 }: {
   shape: NailShape
   widthMm: number
@@ -24,6 +25,8 @@ export function NailGuide({
   dashed?: boolean
   /** Tailwind `top-*` class for the vertical anchor point. */
   anchor?: string
+  /** Small caption drawn inside the outline, near the free edge. */
+  label?: string
 }) {
   const w = widthMm * pxPerMm
   const h = lengthMm * pxPerMm
@@ -49,6 +52,11 @@ export function NailGuide({
         strokeDasharray={dashed ? '6 4' : undefined}
         vectorEffect="non-scaling-stroke"
       />
+      {label && h > 60 && (
+        <text x={w / 2} y={Math.min(h * 0.22, 40)} textAnchor="middle" fill={color} fillOpacity={0.55} fontSize={9} letterSpacing={2} fontFamily="'DM Mono', monospace">
+          {label}
+        </text>
+      )}
       {/* centre line helps align symmetrical designs */}
       <line x1={w / 2} y1={0} x2={w / 2} y2={h} stroke={color} strokeWidth={1} strokeOpacity={0.35} strokeDasharray="2 4" />
     </svg>

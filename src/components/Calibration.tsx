@@ -35,11 +35,11 @@ export function Calibration({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-gray-900">
+    <div className="fixed inset-0 z-40 flex flex-col bg-ink">
       <header className="flex items-center justify-between px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-2">
         <div>
-          <h2 className="text-lg font-semibold">Calibra la scala</h2>
-          <p className="text-xs text-gray-400">Appoggia una tip vera sullo schermo e fai combaciare la sagoma.</p>
+          <h2 className="font-display text-2xl">Calibra la scala</h2>
+          <p className="text-xs text-muted">Appoggia una tip vera sullo schermo e fai combaciare la sagoma.</p>
         </div>
         <Btn onClick={onClose} label="Chiudi">
           {icons.x}
@@ -49,7 +49,7 @@ export function Calibration({ onClose }: { onClose: () => void }) {
       {/* Calibration surface: white like the lightbox so the physical tip is easy to see */}
       <div
         ref={stageRef}
-        className="relative flex-1 overflow-hidden bg-white"
+        className="relative mx-3 flex-1 overflow-hidden rounded-[22px] border border-gold-soft/60 bg-paper"
         style={{ touchAction: 'none' }}
       >
         <NailGuide
@@ -57,19 +57,19 @@ export function Calibration({ onClose }: { onClose: () => void }) {
           widthMm={tipMm}
           lengthMm={lengthMm}
           pxPerMm={draft}
-          color="#db2777"
+          color="#d9749f"
           strokeWidth={2}
           dashed={false}
         />
-        <div className="pointer-events-none absolute inset-x-0 top-3 text-center text-xs font-medium text-gray-500">
-          ↔ trascina a destra o a sinistra per allargare o stringere
+        <div className="label pointer-events-none absolute inset-x-0 top-3 text-center text-[10px]!">
+          ↔ trascina per adattare
         </div>
         <div className="pointer-events-none absolute bottom-2 left-3">
           <Ruler pxPerMm={draft} lengthMm={Math.min(60, (window.innerWidth - 48) / draft)} />
         </div>
       </div>
 
-      <div className="max-h-[48dvh] space-y-4 overflow-y-auto px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+      <div className="max-h-[48dvh] space-y-1 overflow-y-auto pt-1 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         <Section title="Larghezza reale della tip">
           <div className="flex items-center gap-2">
             <NumberField value={tipMm} onChange={setTipMm} step={0.1} min={5} max={25} suffix="mm" label="Larghezza tip in mm" />
@@ -79,8 +79,8 @@ export function Calibration({ onClose }: { onClose: () => void }) {
                   key={t.size}
                   type="button"
                   onClick={() => setTipMm(t.mm)}
-                  className={`flex shrink-0 flex-col items-center rounded-lg px-2 py-1 text-xs ${
-                    tipMm === t.mm ? 'bg-accent text-white' : 'bg-gray-800 text-gray-300'
+                  className={`flex shrink-0 flex-col items-center rounded-xl border px-2.5 py-1 font-mono text-xs ${
+                    tipMm === t.mm ? 'border-pink bg-pink text-ink' : 'border-line bg-panel-2 text-cream'
                   }`}
                 >
                   <span className="font-semibold">#{t.size}</span>
@@ -89,14 +89,14 @@ export function Calibration({ onClose }: { onClose: () => void }) {
               ))}
             </div>
           </div>
-          <p className="text-[11px] text-gray-500">
+          <p className="text-[11px] text-muted">
             Le taglie variano per marca: misura la tip con un righello se puoi, poi scrivi il valore.
           </p>
         </Section>
 
         <Section
-          title="Adatta la sagoma alla tip"
-          right={<span className="text-xs text-gray-400 tabular-nums">{draft.toFixed(2)} px/mm · ≈{Math.round(draft * 25.4)} ppi</span>}
+          title="Adatta la sagoma"
+          right={<span className="font-mono text-xs text-cream tabular-nums">{draft.toFixed(2)} px/mm</span>}
         >
           <div className="flex items-center gap-2">
             <Btn onClick={() => nudge(-0.01)} label="Riduci">−</Btn>
@@ -110,9 +110,9 @@ export function Calibration({ onClose }: { onClose: () => void }) {
           </div>
         </Section>
 
-        <div className="flex gap-2">
-          <Btn onClick={onClose} className="flex-1">Annulla</Btn>
-          <Btn onClick={confirm} active className="flex-1">
+        <div className="flex gap-2 px-4 pt-2">
+          <Btn onClick={onClose} className="flex-1 rounded-full">Annulla</Btn>
+          <Btn onClick={confirm} variant="pink" className="flex-1 rounded-full">
             {icons.check} Conferma
           </Btn>
         </div>

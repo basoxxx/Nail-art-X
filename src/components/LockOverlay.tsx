@@ -1,16 +1,36 @@
 import { useRef, useState, type PointerEvent as RPointerEvent } from 'react'
 import { icons } from './ui'
 
-const TRACK_W = 260
-const THUMB = 52
+const TRACK_W = 250
+const THUMB = 48
 const TRAVEL = TRACK_W - THUMB - 8
 
+/** Full-screen shield that swallows every touch while a tip or brush rests on the glass. */
+export function LockOverlay() {
+  const swallow = (e: { preventDefault: () => void; stopPropagation: () => void }) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  return (
+    <div
+      className="fixed inset-0 z-50"
+      style={{ touchAction: 'none' }}
+      onPointerDown={swallow}
+      onPointerMove={swallow}
+      onPointerUp={swallow}
+      onTouchStart={(e) => e.stopPropagation()}
+      onContextMenu={swallow}
+      onDoubleClick={swallow}
+      aria-hidden
+    />
+  )
+}
+
 /**
- * Full-screen shield that swallows every touch while the artist rests a tip or
- * brush on the glass. Only a deliberate slide of the thumb unlocks — a tip or
- * finger simply resting on the track does nothing.
+ * Pink pill that sits above the shield. Only a deliberate slide of the thumb
+ * unlocks: a tip or finger simply resting on the track does nothing.
  */
-export function LockOverlay({ onUnlock }: { onUnlock: () => void }) {
+export function SlideToUnlock({ onUnlock }: { onUnlock: () => void }) {
   const [x, setX] = useState(0)
   const drag = useRef<{ id: number; startX: number } | null>(null)
 
@@ -42,56 +62,36 @@ export function LockOverlay({ onUnlock }: { onUnlock: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50"
-      style={{ touchAction: 'none' }}
+      className="relative z-[60] flex h-14 items-center rounded-full bg-pink p-1 shadow-lg"
+      style={{ width: TRACK_W, touchAction: 'none' }}
       onPointerDown={swallow}
-      onPointerMove={swallow}
-      onPointerUp={swallow}
-      onTouchStart={(e) => e.stopPropagation()}
-      onContextMenu={swallow}
-      onDoubleClick={swallow}
-      role="dialog"
-      aria-label="Interfaccia bloccata"
     >
-      <div className="pointer-events-none absolute inset-x-0 top-[calc(env(safe-area-inset-top)+0.5rem)] flex justify-center">
-        <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1 text-xs text-white/80 backdrop-blur">
-          {icons.lock} Bloccato
-        </div>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] flex justify-center">
-        <div
-          className="relative flex h-[60px] items-center rounded-full bg-black/45 p-1 backdrop-blur"
-          style={{ width: TRACK_W }}
-        >
-          <span
-            className="pointer-events-none absolute inset-0 flex items-center justify-center pl-10 text-sm font-medium text-white/80"
-            style={{ opacity: 1 - progress * 1.5 }}
-          >
-            scorri per sbloccare
-          </span>
-          <div
-            className="relative z-10 flex items-center justify-center rounded-full bg-white text-gray-900 shadow-lg"
-            style={{
-              width: THUMB,
-              height: THUMB,
-              transform: `translateX(${x}px)`,
-              transition: drag.current ? 'none' : 'transform 200ms ease-out',
-              touchAction: 'none',
-            }}
-            onPointerDown={onDown}
-            onPointerMove={onMove}
-            onPointerUp={onUp}
-            onPointerCancel={onUp}
-            role="slider"
-            aria-label="Scorri per sbloccare"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progress * 100)}
-          >
-            {progress > 0.9 ? icons.unlock : icons.arrowRight}
-          </div>
-        </div>
+      <span
+        className="label pointer-events-none absolute inset-0 flex items-center justify-center pl-10 text-[11px]! text-ink/75!"
+        style={{ opacity: 1 - progress * 1.5 }}
+      >
+        Scorri per sbloccare
+      </span>
+      <div
+        className="relative z-10 flex items-center justify-center rounded-full bg-[#fbf8f4] text-ink shadow"
+        style={{
+          width: THUMB,
+          height: THUMB,
+          transform: `translateX(${x}px)`,
+          transition: drag.current ? 'none' : 'transform 200ms ease-out',
+          touchAction: 'none',
+        }}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        role="slider"
+        aria-label="Scorri per sbloccare"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(progress * 100)}
+      >
+        {progress > 0.9 ? icons.unlock : icons.lock}
       </div>
     </div>
   )

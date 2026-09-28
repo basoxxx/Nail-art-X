@@ -7,6 +7,7 @@ export type Background = 'white' | 'black'
 
 export interface DesignImage {
   url: string
+  name: string
   naturalWidth: number
   naturalHeight: number
 }

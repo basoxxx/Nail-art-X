@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useGesture } from '@use-gesture/react'
 import { useStore } from '../lib/store'
 import { NailGuide } from './NailGuide'
 import { Ruler } from './Ruler'
+import { icons } from './ui'
+
+const GRID_MM = 5
 
 /**
- * The lightbox surface: design image + nail guide, both at real scale.
- * One finger pans, two fingers pinch-zoom and rotate, double tap re-centres.
+ * The lightbox surface: design image + nail guide, both at real scale, on a
+ * paper background with a real-millimetre grid. One finger pans, two fingers
+ * pinch-zoom and rotate, double tap re-centres.
  */
-export function Stage() {
+export function Stage({ children }: { children?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const lastTap = useRef(0)
   const [stageWidth, setStageWidth] = useState(0)
@@ -59,25 +63,35 @@ export function Stage() {
 
   const dark = background === 'black'
   const widthPx = t.widthMm * pxPerMm
+  const grid = GRID_MM * pxPerMm
+  const gridLine = dark ? 'rgb(255 255 255 / 0.07)' : 'rgb(60 45 30 / 0.07)'
 
   return (
     <div
       ref={ref}
       className="absolute inset-0 overflow-hidden"
-      style={{ background: dark ? '#000' : '#fff', touchAction: 'none' }}
+      style={{
+        touchAction: 'none',
+        backgroundColor: dark ? '#000' : 'var(--color-paper)',
+        backgroundImage: `linear-gradient(to right, ${gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${gridLine} 1px, transparent 1px)`,
+        backgroundSize: `${grid}px ${grid}px`,
+        backgroundPosition: 'center',
+      }}
     >
       {image && (
         <img
           src={image.url}
           alt="Design di riferimento"
           draggable={false}
-          className="pointer-events-none absolute top-[38%] left-1/2 max-w-none select-none"
+          className="pointer-events-none absolute top-1/2 left-1/2 max-w-none select-none"
           style={{
             width: widthPx,
             height: (widthPx * image.naturalHeight) / image.naturalWidth,
             opacity: t.opacity,
             transform: `translate(-50%, -50%) translate(${t.xMm * pxPerMm}px, ${t.yMm * pxPerMm}px) rotate(${t.rotation}deg) scale(${t.flipX ? -1 : 1}, ${t.flipY ? -1 : 1})`,
             willChange: 'transform',
+            // White paper areas of a photo/scan disappear, so the grid and guide show through.
+            mixBlendMode: dark ? 'normal' : 'multiply',
           }}
         />
       )}
@@ -91,15 +105,25 @@ export function Stage() {
           color={guide.color}
           opacity={guide.opacity}
           rotation={guide.rotation}
-          anchor="top-[38%]"
+          label="GUIDA"
         />
       )}
 
-      {showRuler && stageWidth > 0 && (
-        <div className="pointer-events-none absolute left-3 top-[calc(env(safe-area-inset-top)+4.25rem)]">
-          <Ruler pxPerMm={pxPerMm} lengthMm={(stageWidth - 40) / pxPerMm} dark={dark} />
+      {locked && (
+        <div className="pointer-events-none absolute inset-x-0 top-4 flex justify-center">
+          <div className="label flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-[#5a5046]! shadow-md">
+            {icons.lock} Design bloccato
+          </div>
         </div>
       )}
+
+      {showRuler && stageWidth > 0 && (
+        <div className="pointer-events-none absolute bottom-3 left-3">
+          <Ruler pxPerMm={pxPerMm} lengthMm={(stageWidth - 48) / pxPerMm} dark={dark} />
+        </div>
+      )}
+
+      {children}
     </div>
   )
 }
