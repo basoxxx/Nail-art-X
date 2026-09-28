@@ -78,6 +78,21 @@ export function Stage({ children }: { children?: ReactNode }) {
         backgroundPosition: 'center',
       }}
     >
+      {/* frosted tip body sits under the design, outline on top */}
+      {guide.visible && (
+        <NailGuide
+          shape={guide.shape}
+          widthMm={guide.widthMm}
+          lengthMm={guide.lengthMm}
+          pxPerMm={pxPerMm}
+          color={guide.color}
+          opacity={guide.opacity}
+          rotation={guide.rotation}
+          layer="fill"
+          fillOpacity={dark ? 0.12 : 0.6}
+        />
+      )}
+
       {image && (
         <img
           src={image.url}
@@ -96,6 +111,7 @@ export function Stage({ children }: { children?: ReactNode }) {
         />
       )}
 
+
       {guide.visible && (
         <NailGuide
           shape={guide.shape}
@@ -105,6 +121,7 @@ export function Stage({ children }: { children?: ReactNode }) {
           color={guide.color}
           opacity={guide.opacity}
           rotation={guide.rotation}
+          layer="stroke"
           label="GUIDA"
         />
       )}

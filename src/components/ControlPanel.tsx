@@ -3,7 +3,7 @@ import { PX_PER_MM_MAX, PX_PER_MM_MIN } from '../lib/calibration'
 import { WIDTH_MM_MAX, WIDTH_MM_MIN, useStore } from '../lib/store'
 import { Btn, Card, NumberField, Section, Slider, Value, icons } from './ui'
 
-const GUIDE_COLORS = ['#b8906a', '#d9749f', '#1f1b17', '#3aa7b8', '#c0473f']
+const GUIDE_COLORS = ['#8a8076', '#b8906a', '#d9749f', '#1f1b17', '#3aa7b8']
 
 /** All editing controls, stacked in gold-framed cards below the canvas. */
 export function ControlPanel({ onCalibrate }: { onCalibrate: () => void }) {

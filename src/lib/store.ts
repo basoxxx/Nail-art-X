@@ -82,12 +82,12 @@ export const useStore = create<State>()(
       transform: defaultTransform(),
       guide: {
         visible: true,
-        shape: 'almond',
+        shape: 'coffin',
         widthMm: 14,
         lengthMm: 24,
         opacity: 0.8,
         rotation: 0,
-        color: '#ec4899',
+        color: '#8a8076',
       },
       background: 'white',
       showRuler: false,
@@ -118,7 +118,13 @@ export const useStore = create<State>()(
     }),
     {
       name: 'nail-art-x',
-      version: 1,
+      version: 2,
+      // v2: guide restyled as a frosted tip with a grey outline.
+      migrate: (persisted, version) => {
+        const s = persisted as Partial<State>
+        if (version < 2 && s.guide) s.guide = { ...s.guide, color: '#8a8076' }
+        return s as State
+      },
       partialize: (s) => ({
         pxPerMm: s.pxPerMm,
         calibrated: s.calibrated,
