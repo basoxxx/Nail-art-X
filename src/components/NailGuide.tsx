@@ -1,6 +1,10 @@
 import { nailPath, type NailShape } from '../lib/nailShapes'
 
-/** Nail outline sized in real millimetres, centred on its box. */
+/**
+ * Nail outline sized in real millimetres, centred on its box. Drawn with the
+ * free edge pointing down (towards the bottom of the phone), the way the tip is
+ * held while tracing.
+ */
 export function NailGuide({
   shape,
   widthMm,
@@ -43,17 +47,19 @@ export function NailGuide({
       }}
       aria-hidden
     >
-      <path
-        d={nailPath(shape, w, h)}
-        fill={color}
-        fillOpacity={0.08}
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeDasharray={dashed ? '6 4' : undefined}
-        vectorEffect="non-scaling-stroke"
-      />
+      <g transform={`rotate(180 ${w / 2} ${h / 2})`}>
+        <path
+          d={nailPath(shape, w, h)}
+          fill={color}
+          fillOpacity={0.08}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeDasharray={dashed ? '6 4' : undefined}
+          vectorEffect="non-scaling-stroke"
+        />
+      </g>
       {label && h > 60 && (
-        <text x={w / 2} y={Math.min(h * 0.22, 40)} textAnchor="middle" fill={color} fillOpacity={0.55} fontSize={9} letterSpacing={2} fontFamily="'DM Mono', monospace">
+        <text x={w / 2} y={Math.min(w * 0.3, h * 0.3) + 14} textAnchor="middle" fill={color} fillOpacity={0.55} fontSize={9} letterSpacing={2} fontFamily="'DM Mono', monospace">
           {label}
         </text>
       )}
