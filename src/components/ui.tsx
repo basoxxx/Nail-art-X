@@ -148,5 +148,6 @@ export const icons = {
   target: <Icon d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />,
   check: <Icon d="M5 12l5 5L20 7" />,
   x: <Icon d="M6 6l12 12 M18 6 6 18" />,
+  download: <Icon d="M12 3v12 M7 10l5 5 5-5 M5 21h14" />,
   arrowRight: <Icon d="M5 12h14 M13 6l6 6-6 6" />,
 }

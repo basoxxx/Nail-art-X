@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { useStore } from './lib/store'
 import { useWakeLock } from './lib/useWakeLock'
+import { useInstallPrompt } from './lib/useInstallPrompt'
 import { Stage } from './components/Stage'
 import { ControlPanel } from './components/ControlPanel'
 import { Calibration } from './components/Calibration'
@@ -88,6 +89,7 @@ export default function App() {
 }
 
 function EmptyState({ calibrated, onLoad, onCalibrate }: { calibrated: boolean; onLoad: () => void; onCalibrate: () => void }) {
+  const { canPrompt, showIosHint, install } = useInstallPrompt()
   return (
     <div className="pointer-events-auto mx-auto w-[min(22rem,calc(100%-2rem))] space-y-3 rounded-3xl bg-gray-900/90 p-5 text-center shadow-2xl">
       <h1 className="text-xl font-bold">Nail Art X</h1>
@@ -100,6 +102,16 @@ function EmptyState({ calibrated, onLoad, onCalibrate }: { calibrated: boolean; 
       <Btn onClick={onLoad} active className="w-full">
         {icons.image} {calibrated ? 'Carica un design' : '2. Carica un design'}
       </Btn>
+      {canPrompt && (
+        <Btn onClick={install} className="w-full">
+          {icons.download} Installa l'app
+        </Btn>
+      )}
+      {showIosHint && (
+        <p className="rounded-xl bg-gray-800 p-2 text-xs text-gray-300">
+          Per installarla: tocca <b>Condividi</b> e poi <b>Aggiungi alla schermata Home</b>.
+        </p>
+      )}
       <p className="text-[11px] text-gray-500">Consiglio: porta la luminosità dello schermo al massimo.</p>
     </div>
   )
