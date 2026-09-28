@@ -1,0 +1,14 @@
+{
+  "name": "Nail Art X – Lightbox",
+  "short_name": "Nail Art X",
+  "description": "Lightbox digitale per il ricalco dei design di nail art, in scala reale.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

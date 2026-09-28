@@ -1,0 +1,56 @@
+import { nailPath, type NailShape } from '../lib/nailShapes'
+
+/** Nail outline sized in real millimetres, centred on its box. */
+export function NailGuide({
+  shape,
+  widthMm,
+  lengthMm,
+  pxPerMm,
+  color,
+  opacity = 1,
+  rotation = 0,
+  strokeWidth = 2,
+  dashed = true,
+  anchor = 'top-1/2',
+}: {
+  shape: NailShape
+  widthMm: number
+  lengthMm: number
+  pxPerMm: number
+  color: string
+  opacity?: number
+  rotation?: number
+  strokeWidth?: number
+  dashed?: boolean
+  /** Tailwind `top-*` class for the vertical anchor point. */
+  anchor?: string
+}) {
+  const w = widthMm * pxPerMm
+  const h = lengthMm * pxPerMm
+  const pad = strokeWidth * 2
+  return (
+    <svg
+      width={w + pad * 2}
+      height={h + pad * 2}
+      viewBox={`${-pad} ${-pad} ${w + pad * 2} ${h + pad * 2}`}
+      className={`pointer-events-none absolute left-1/2 overflow-visible ${anchor}`}
+      style={{
+        opacity,
+        transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+      }}
+      aria-hidden
+    >
+      <path
+        d={nailPath(shape, w, h)}
+        fill={color}
+        fillOpacity={0.08}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeDasharray={dashed ? '6 4' : undefined}
+        vectorEffect="non-scaling-stroke"
+      />
+      {/* centre line helps align symmetrical designs */}
+      <line x1={w / 2} y1={0} x2={w / 2} y2={h} stroke={color} strokeWidth={1} strokeOpacity={0.35} strokeDasharray="2 4" />
+    </svg>
+  )
+}
