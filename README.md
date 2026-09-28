@@ -2,6 +2,8 @@
 
 Lightbox digitale per nail artist: mostra un design **in scala reale** sullo schermo dello smartphone, così puoi appoggiare una tip e ricalcarlo.
 
+**👉 Apri l'app: [basoxxx.github.io/Nail-art-X](https://basoxxx.github.io/Nail-art-X/)**, poi installala sul telefono (Android: *Installa l'app*; iPhone: Condividi → *Aggiungi alla schermata Home*).
+
 ## Funzionalità
 
 - **Design**: carichi un'immagine dalla galleria e la regoli con gesture (1 dito sposta, 2 dita zoom e rotazione, doppio tap centra) o con controlli precisi: opacità, larghezza in mm, rotazione a step di 1°/15°, flip orizzontale e verticale.
@@ -21,7 +23,7 @@ Il workflow `.github/workflows/deploy.yml` compila e pubblica l'app a ogni push 
 
 Configurazione una tantum: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-L'app sarà su `https://<utente>.github.io/<repo>/`. Tutti i percorsi sono relativi (`base: './'`), quindi funziona in qualsiasi sotto-cartella.
+L'app è pubblicata su https://basoxxx.github.io/Nail-art-X/. Tutti i percorsi sono relativi (`base: './'`), quindi funziona in qualsiasi sotto-cartella.
 
 ## Sviluppo
 
